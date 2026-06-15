@@ -4,7 +4,7 @@ import { useState, useRef } from "react";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 
-const SECTION_COLORS = ["#1e3a5f", "#7c3aed", "#0e7490", "#b45309", "#15803d", "#be185d", "#1d4ed8"];
+const SECTION_COLORS = ["#00338D", "#483698", "#005EB8", "#0091DA", "#00338D", "#483698", "#005EB8"];
 
 function parseSections(md: string) {
   const sections: { title: string; content: string }[] = [];
@@ -78,47 +78,87 @@ export default function Home() {
 
   return (
     <div style={{ minHeight: "100vh", background: "#f5f6fa" }}>
-      {/* ヘッダー */}
-      <header style={{ background: "#1e3a5f", color: "#fff", padding: "0.9rem 0", marginBottom: "1.5rem" }}>
-        <div className="container" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <h1 style={{ fontSize: "1.15rem", fontWeight: 800, margin: 0 }}>企業調査レポートツール</h1>
-          <Link href="/reports" style={{ color: "#93c5fd", fontSize: "0.85rem" }}>過去のレポート一覧 →</Link>
-        </div>
-      </header>
+      {/* ヘッダー（結果表示中のみ） */}
+      {(report || loading) && (
+        <header style={{ background: "#00338D", color: "#fff", padding: "0.9rem 0", marginBottom: "1.5rem" }}>
+          <div className="container" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <h1 style={{ fontSize: "1.1rem", fontWeight: 800, margin: 0 }}>企業調査レポートツール</h1>
+            <Link href="/reports" style={{ color: "#93c5fd", fontSize: "0.85rem" }}>過去のレポート一覧 →</Link>
+          </div>
+        </header>
+      )}
 
       {/* ヒーローセクション（結果がない時だけ表示） */}
       {!report && !loading && (
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "60vh", padding: "2rem 1rem" }}>
-          <div style={{ fontSize: "3rem", marginBottom: "0.5rem" }}>🔍</div>
-          <h2 style={{ fontSize: "2rem", fontWeight: 800, color: "#1e3a5f", margin: "0 0 0.5rem", textAlign: "center" }}>企業を調査する</h2>
-          <p style={{ color: "var(--text-muted)", marginBottom: "2rem", textAlign: "center", fontSize: "1rem" }}>
-            企業名を入力するだけで、AIがWeb検索して詳細なレポートを自動生成します
+        <div style={{
+          display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+          minHeight: "80vh", padding: "2rem 1rem",
+          background: "linear-gradient(135deg, #00338D 0%, #005EB8 55%, #483698 100%)",
+          margin: "-1.5rem 0 0",
+        }}>
+          {/* バッジ */}
+          <div style={{
+            background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.2)",
+            borderRadius: "20px", padding: "0.35rem 1rem", fontSize: "0.8rem", color: "#93c5fd",
+            marginBottom: "1.5rem", letterSpacing: "0.05em", fontWeight: 600,
+          }}>
+            ✦ AI搭載 企業調査ツール
+          </div>
+
+          <h2 style={{
+            fontSize: "clamp(1.8rem, 5vw, 3rem)", fontWeight: 900, color: "#fff",
+            margin: "0 0 0.75rem", textAlign: "center", lineHeight: 1.2,
+            textShadow: "0 2px 20px rgba(0,0,0,0.3)",
+          }}>
+            企業リサーチを<br />
+            <span style={{ color: "#0091DA" }}>AIが自動化</span>する
+          </h2>
+          <p style={{ color: "rgba(255,255,255,0.65)", marginBottom: "2.5rem", textAlign: "center", fontSize: "1rem", maxWidth: "420px", lineHeight: 1.7 }}>
+            企業名を入力するだけで、Web検索・財務分析・競合調査まで<br />詳細レポートを自動生成・保存します
           </p>
-          <form onSubmit={handleResearch} style={{ width: "100%", maxWidth: "560px", display: "flex", flexDirection: "column", gap: "0.75rem" }}>
-            <div style={{ display: "flex", gap: "0.5rem", boxShadow: "0 4px 24px rgba(0,0,0,0.12)", borderRadius: "12px", overflow: "hidden", background: "#fff", border: "2px solid transparent", outline: "none" }}>
+
+          {/* 検索ボックス */}
+          <form onSubmit={handleResearch} style={{ width: "100%", maxWidth: "580px" }}>
+            <div style={{
+              display: "flex", background: "#fff", borderRadius: "16px",
+              boxShadow: "0 8px 40px rgba(0,0,0,0.3)", overflow: "hidden",
+              border: "2px solid rgba(255,255,255,0.1)",
+            }}>
               <input
                 type="text"
-                placeholder="例：トヨタ自動車、Apple、ソフトバンク..."
+                placeholder="企業名を入力（例：トヨタ自動車、Apple…）"
                 value={companyName}
                 onChange={(e) => setCompanyName(e.target.value)}
-                style={{ border: "none", borderRadius: 0, fontSize: "1.05rem", padding: "0.9rem 1.2rem", boxShadow: "none", flex: 1 }}
+                style={{
+                  border: "none", borderRadius: 0, fontSize: "1.05rem",
+                  padding: "1rem 1.3rem", boxShadow: "none", flex: 1, color: "#111",
+                }}
               />
-              <button type="submit" className="btn btn-primary" disabled={!companyName.trim()}
-                style={{ borderRadius: 0, padding: "0 1.5rem", fontSize: "1rem" }}>
-                調査開始
+              <button type="submit" disabled={!companyName.trim()} style={{
+                background: companyName.trim() ? "linear-gradient(135deg, #00338D, #005EB8)" : "#d1d5db",
+                color: "#fff", border: "none", padding: "0 1.8rem", fontSize: "0.95rem",
+                fontWeight: 700, cursor: companyName.trim() ? "pointer" : "not-allowed",
+                transition: "background 0.2s", whiteSpace: "nowrap",
+              }}>
+                調査開始 →
               </button>
             </div>
           </form>
-          {/* クイック例 */}
+
+          {/* クイック選択 */}
           <div style={{ marginTop: "1.2rem", display: "flex", gap: "0.5rem", flexWrap: "wrap", justifyContent: "center" }}>
             {["トヨタ自動車", "Apple", "ソフトバンク", "任天堂", "Sony"].map((name) => (
-              <button key={name} onClick={() => setCompanyName(name)}
-                style={{ background: "#f0f4f8", border: "1px solid #e5e7eb", borderRadius: "20px", padding: "0.3rem 0.9rem", fontSize: "0.85rem", cursor: "pointer", color: "#1e3a5f", fontWeight: 500 }}>
+              <button key={name} onClick={() => setCompanyName(name)} style={{
+                background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.25)",
+                borderRadius: "20px", padding: "0.35rem 0.9rem", fontSize: "0.82rem",
+                cursor: "pointer", color: "#e2e8f0", fontWeight: 500, transition: "background 0.15s",
+              }}>
                 {name}
               </button>
             ))}
           </div>
-          <Link href="/reports" style={{ marginTop: "2rem", color: "var(--text-muted)", fontSize: "0.85rem" }}>
+
+          <Link href="/reports" style={{ marginTop: "2.5rem", color: "rgba(255,255,255,0.45)", fontSize: "0.85rem" }}>
             過去のレポートを見る →
           </Link>
         </div>
@@ -153,7 +193,7 @@ export default function Home() {
             <div>
               {/* タイトルバー */}
               <div style={{ background: "#fff", border: "1px solid #e5e7eb", borderRadius: "8px", marginBottom: "1rem", overflow: "hidden" }}>
-                <div style={{ background: "#1e3a5f", color: "#fff", padding: "0.9rem 1.2rem", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <div style={{ background: "#00338D", color: "#fff", padding: "0.9rem 1.2rem", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                   <h2 style={{ margin: 0, fontSize: "1.15rem", fontWeight: 800 }}>{companyName}</h2>
                   <div style={{ display: "flex", gap: "0.5rem" }}>
                     <button onClick={() => window.print()} style={{ background: "rgba(255,255,255,0.18)", color: "#fff", border: "none", borderRadius: "6px", padding: "0.35rem 0.75rem", fontSize: "0.8rem", cursor: "pointer", fontWeight: 600 }}>
@@ -170,7 +210,7 @@ export default function Home() {
                   </div>
                 </div>
                 <div style={{ padding: "0.4rem 1rem 0", borderBottom: "1px solid #e5e7eb", display: "flex" }}>
-                  <div style={{ padding: "0.5rem 0.8rem", fontSize: "0.88rem", fontWeight: 700, borderBottom: "2px solid #1e3a5f", color: "#1e3a5f" }}>
+                  <div style={{ padding: "0.5rem 0.8rem", fontSize: "0.88rem", fontWeight: 700, borderBottom: "2px solid #00338D", color: "#00338D" }}>
                     📄 企業調査レポート
                   </div>
                 </div>
@@ -189,7 +229,7 @@ export default function Home() {
                     style={{
                       width: "100%", textAlign: "left", padding: "0.85rem 1.2rem",
                       background: openSections[i] ? SECTION_COLORS[i % SECTION_COLORS.length] : "#fff",
-                      color: openSections[i] ? "#fff" : "#1e3a5f",
+                      color: openSections[i] ? "#fff" : "#00338D",
                       border: "none", cursor: "pointer",
                       display: "flex", justifyContent: "space-between", alignItems: "center",
                       fontWeight: 700, fontSize: "0.92rem",

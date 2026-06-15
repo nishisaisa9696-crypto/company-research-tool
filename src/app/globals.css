@@ -5,16 +5,16 @@
 }
 
 :root {
-  --bg: #f9fafb;
+  --bg: #f2f4f8;
   --surface: #ffffff;
-  --border: #e5e7eb;
-  --text: #111827;
+  --border: #dde3ee;
+  --text: #1a1a2e;
   --text-muted: #6b7280;
-  --primary: #2563eb;
-  --primary-hover: #1d4ed8;
+  --primary: #00338D;
+  --primary-hover: #002d7a;
   --danger: #dc2626;
   --success: #16a34a;
-  --radius: 8px;
+  --radius: 10px;
 }
 
 body {
@@ -104,8 +104,8 @@ input[type="text"]:focus {
   font-weight: 800;
   margin: 1.5rem 0 0.8rem;
   padding-bottom: 0.4rem;
-  border-bottom: 3px solid #1e3a5f;
-  color: #1e3a5f;
+  border-bottom: 3px solid #00338D;
+  color: #00338D;
 }
 
 .markdown-body h2 {
@@ -114,9 +114,9 @@ input[type="text"]:focus {
   margin: 1.8rem 0 0.6rem;
   padding: 0.5rem 0.8rem;
   background: #f0f4f8;
-  border-left: 4px solid #1e3a5f;
+  border-left: 4px solid #00338D;
   border-radius: 0 4px 4px 0;
-  color: #1e3a5f;
+  color: #00338D;
 }
 
 .markdown-body h3 {
