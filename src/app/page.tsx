@@ -86,17 +86,57 @@ export default function Home() {
         </div>
       </header>
 
-      <div className="container" style={{ paddingBottom: "3rem" }}>
-        {/* 検索フォーム */}
-        <div className="card" style={{ marginBottom: "1.5rem" }}>
-          <form onSubmit={handleResearch} style={{ display: "flex", gap: "0.75rem" }}>
-            <input type="text" placeholder="企業名を入力（例：任天堂、Apple、ソフトバンク）"
-              value={companyName} onChange={(e) => setCompanyName(e.target.value)} disabled={loading} />
-            {loading
-              ? <button type="button" className="btn btn-secondary" onClick={() => abortRef.current?.abort()}>停止</button>
-              : <button type="submit" className="btn btn-primary" disabled={!companyName.trim()}>調査開始</button>}
+      {/* ヒーローセクション（結果がない時だけ表示） */}
+      {!report && !loading && (
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "60vh", padding: "2rem 1rem" }}>
+          <div style={{ fontSize: "3rem", marginBottom: "0.5rem" }}>🔍</div>
+          <h2 style={{ fontSize: "2rem", fontWeight: 800, color: "#1e3a5f", margin: "0 0 0.5rem", textAlign: "center" }}>企業を調査する</h2>
+          <p style={{ color: "var(--text-muted)", marginBottom: "2rem", textAlign: "center", fontSize: "1rem" }}>
+            企業名を入力するだけで、AIがWeb検索して詳細なレポートを自動生成します
+          </p>
+          <form onSubmit={handleResearch} style={{ width: "100%", maxWidth: "560px", display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+            <div style={{ display: "flex", gap: "0.5rem", boxShadow: "0 4px 24px rgba(0,0,0,0.12)", borderRadius: "12px", overflow: "hidden", background: "#fff", border: "2px solid transparent", outline: "none" }}>
+              <input
+                type="text"
+                placeholder="例：トヨタ自動車、Apple、ソフトバンク..."
+                value={companyName}
+                onChange={(e) => setCompanyName(e.target.value)}
+                style={{ border: "none", borderRadius: 0, fontSize: "1.05rem", padding: "0.9rem 1.2rem", boxShadow: "none", flex: 1 }}
+              />
+              <button type="submit" className="btn btn-primary" disabled={!companyName.trim()}
+                style={{ borderRadius: 0, padding: "0 1.5rem", fontSize: "1rem" }}>
+                調査開始
+              </button>
+            </div>
           </form>
+          {/* クイック例 */}
+          <div style={{ marginTop: "1.2rem", display: "flex", gap: "0.5rem", flexWrap: "wrap", justifyContent: "center" }}>
+            {["トヨタ自動車", "Apple", "ソフトバンク", "任天堂", "Sony"].map((name) => (
+              <button key={name} onClick={() => setCompanyName(name)}
+                style={{ background: "#f0f4f8", border: "1px solid #e5e7eb", borderRadius: "20px", padding: "0.3rem 0.9rem", fontSize: "0.85rem", cursor: "pointer", color: "#1e3a5f", fontWeight: 500 }}>
+                {name}
+              </button>
+            ))}
+          </div>
+          <Link href="/reports" style={{ marginTop: "2rem", color: "var(--text-muted)", fontSize: "0.85rem" }}>
+            過去のレポートを見る →
+          </Link>
         </div>
+      )}
+
+      <div className="container" style={{ paddingBottom: "3rem" }}>
+        {/* 検索フォーム（結果表示中） */}
+        {(report || loading) && (
+          <div className="card" style={{ marginBottom: "1.5rem" }}>
+            <form onSubmit={handleResearch} style={{ display: "flex", gap: "0.75rem" }}>
+              <input type="text" placeholder="企業名を入力（例：任天堂、Apple、ソフトバンク）"
+                value={companyName} onChange={(e) => setCompanyName(e.target.value)} disabled={loading} />
+              {loading
+                ? <button type="button" className="btn btn-secondary" onClick={() => abortRef.current?.abort()}>停止</button>
+                : <button type="submit" className="btn btn-primary" disabled={!companyName.trim()}>調査開始</button>}
+            </form>
+          </div>
+        )}
 
         {loading && !report && (
           <div className="card" style={{ display: "flex", gap: "0.75rem", alignItems: "center", color: "var(--text-muted)" }}>
@@ -203,6 +243,7 @@ export default function Home() {
             </div>
           </div>
         )}
+      </div>
       </div>
     </div>
   );
