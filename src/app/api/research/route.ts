@@ -55,10 +55,9 @@ export async function POST(req: NextRequest) {
         const response = await anthropic.messages.create({
           model: "claude-opus-4-8",
           max_tokens: 8000,
-          thinking: { type: "adaptive" },
           tools: [
             {
-              type: "web_search_20260209" as const,
+              type: "web_search_20250305" as const,
               name: "web_search",
             },
           ],
