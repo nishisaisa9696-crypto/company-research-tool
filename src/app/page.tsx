@@ -82,7 +82,13 @@ export default function Home() {
       {(report || loading) && (
         <header style={{ background: "#00338D", color: "#fff", padding: "0.9rem 0", marginBottom: "1.5rem" }}>
           <div className="container" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <h1 style={{ fontSize: "1.1rem", fontWeight: 800, margin: 0 }}>企業調査レポートツール</h1>
+            <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+              <button onClick={() => { setReport(""); setError(""); setSavedId(""); setCompanyName(""); setOpenSections({}); }}
+                style={{ background: "rgba(255,255,255,0.15)", border: "none", color: "#fff", borderRadius: "6px", padding: "0.35rem 0.8rem", fontSize: "0.85rem", cursor: "pointer", fontWeight: 600 }}>
+                ← トップへ
+              </button>
+              <h1 style={{ fontSize: "1.1rem", fontWeight: 800, margin: 0 }}>企業調査レポートツール</h1>
+            </div>
             <Link href="/reports" style={{ color: "#93c5fd", fontSize: "0.85rem" }}>過去のレポート一覧 →</Link>
           </div>
         </header>
